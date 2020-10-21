@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onAddClient()">
+        <ion-icon name="add" ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Clientes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="container" *ngIf="loadedClients.length <= 0">
+    <div>
+      <strong>No se han registrado Clientes</strong>
+    </div>
+    <div>
+      <ion-button (click)="onAddClient()">Crear Cliente</ion-button>
+    </div>
+  </div>
+
+  <ion-grid *ngIf="loadedClients.length > 0">
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item *ngFor="let client of loadedClients">
+            <ion-label>
+              <h2> {{ client.firstName }} {{ client.lastName }}</h2>
+              <p> {{ client.celPhone }}</p>
+            </ion-label>
+            <ion-buttons slot="end">
+              <ion-button (click)="onEditClient(client.id)">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </ion-button>
+              <ion-button (click)="onDeleteClient(client.id)" >
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

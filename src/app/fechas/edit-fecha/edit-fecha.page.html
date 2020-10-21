@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-back-button defaultHref="/fechas/detail-fecha/fechaId"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Editar Fecha</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="onEditFecha()" #f="ngForm">
+      <ion-grid>
+
+          <ion-row>
+              <ion-col>
+                  <ion-item>
+                      <ion-label position="floating">Fecha de Depilacion</ion-label>
+                      <ion-datetime min="2020-01-01" [ngModel]="myDate" name="fecha-nueva" required #myDateCtrl="ngModel"></ion-datetime>
+                  </ion-item>
+              </ion-col>
+          </ion-row>
+
+          <ion-row>
+              <ion-col>
+                  <ion-button expand="full" type="submit" [disabled]="!f.valid">Ok</ion-button>
+              </ion-col>
+          </ion-row>
+
+      </ion-grid>
+  </form>
+</ion-content>
