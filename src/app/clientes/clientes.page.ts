@@ -24,6 +24,12 @@ export class ClientesPage implements OnInit, OnDestroy {
 
   }
 
+  ionViewWillEnter(){
+    this.loadedClients.sort((a,b) => 
+      a.lastName.localeCompare(b.lastName)
+    )
+  }
+
   onAddClient(){
     this.router.navigate(['/clientes/new-client']);
   }
