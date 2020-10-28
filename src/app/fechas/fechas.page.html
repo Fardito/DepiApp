@@ -1,44 +1,52 @@
 <ion-header>
   <ion-toolbar>
-      <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>Fechas</ion-title>
-      <ion-buttons slot="primary">
-          <ion-button (click)="onAddFecha()">
-              <ion-icon name="add"></ion-icon>
-          </ion-button>
-      </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Fechas</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onAddFecha()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div id="container" *ngIf="loadedFechas.length <= 0">
-      <div>
-          <strong>No se han registrado fechas</strong>
-      </div>
-      <div>
-          <ion-button (click)="onAddFecha()">Nueva Fecha</ion-button>
-      </div>
+    <div>
+      <strong>No se han registrado fechas</strong>
+    </div>
+    <div>
+      <ion-button (click)="onAddFecha()">Nueva Fecha</ion-button>
+    </div>
   </div>
   <div *ngIf="loadedFechas.length > 0">
-      <ion-grid *ngFor="let fecha of loadedFechas">
-          <ion-row>
-              <ion-col>
-                  <div class="ion-text-center">
-                      <ion-card>
-                          <ion-img src="https://img.huffingtonpost.com/asset/5b50d4831900002a00c6710e.jpeg?ops=scalefit_720_noupscale"></ion-img>
-                          <ion-card-header>
-                              <h1> Fecha Depilacion </h1>
-                              <h1><strong>{{ fecha.date | date }}</strong></h1>
-                          </ion-card-header>
-                          <ion-card-content>
-                              <ion-button (click)="onOpen(fecha.id)">Ver Detalle</ion-button>
-                          </ion-card-content>
-                      </ion-card>
-                  </div>
-              </ion-col>
-          </ion-row>
-      </ion-grid>
+      <ion-segment [(ngModel)]="segmentModel" (ionChange)="onFilterUpdate($event)" value="actuales">
+          <ion-segment-button value="actuales">Actuales</ion-segment-button>
+          <ion-segment-button value="historial">Historial</ion-segment-button>
+      </ion-segment>
+      <!-- REVISAR -->
+    <ion-grid *ngFor="let fecha of relevantFechas">
+      <ion-row>
+        <ion-col>
+          <div class="ion-text-center">
+            <ion-card>
+              <ion-img
+                src="https://img.huffingtonpost.com/asset/5b50d4831900002a00c6710e.jpeg?ops=scalefit_720_noupscale"
+              ></ion-img>
+              <ion-card-header>
+                <h1>Fecha Depilacion</h1>
+                <h1><strong>{{ fecha.date | date }}</strong></h1>
+              </ion-card-header>
+              <ion-card-content>
+                <ion-button (click)="onOpen(fecha.id)">Ver Detalle</ion-button>
+              </ion-card-content>
+            </ion-card>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
+  
 </ion-content>
