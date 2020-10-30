@@ -69,7 +69,27 @@ export class DetailFechaPage implements OnInit, OnDestroy {
   }
 
   onDeleteTurno(id: string){
-    this.turnoService.deleteTurno(id).subscribe();
+    this.alertCtrl.create({
+      header: 'Eliminar Turno',
+      message: '¿Seguro que desea eliminar el turno?',
+      buttons: [
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.turnoService.deleteTurno(id).subscribe();
+          }
+        },
+        {
+          text: 'Cancelar',
+          handler: () => {
+            return;
+          }
+        }
+      ]
+    }).then( alertEl => {
+      alertEl.present();
+    });
+    
   }
 
   onDeleteFecha(id: string) {
