@@ -18,7 +18,6 @@ export class DetailFechaPage implements OnInit, OnDestroy {
   fechaSub: Subscription;
   loadedTurnos: Turno[];
   turnoSub: Subscription;
-  reorden: boolean = true;
 
   @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
 
@@ -52,16 +51,6 @@ export class DetailFechaPage implements OnInit, OnDestroy {
   onEditFecha(){
     this.router.navigate([`/fechas/edit-fecha/${this.fechaActual.id}`]);
   }
-
-  doReorder(ev: CustomEvent<ItemReorderEventDetail>) {
-    ev.detail.complete();
-  }
-
-  toggleReorderGroup() {
-    this.reorden = !this.reorden;
-    this.reorderGroup.disabled = this.reorden;
-  }
-
   
 
   onAddTurno(){
