@@ -4,4 +4,5 @@
     <string name="title_activity_main">DepApp</string>
     <string name="package_name">com.fardosoftware.depapp</string>
     <string name="custom_url_scheme">com.fardosoftware.depapp</string>
+    <string name="server_client_id">965954966977-220dsurl2r3kgp824ijl2lfjap5p3iov.apps.googleusercontent.com</string>
 </resources>

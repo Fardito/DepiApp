@@ -1,5 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/auth-guard';
+
+// Send unauthorized users to login
+const redirectUnauthorizedToLogin = () =>  redirectUnauthorizedTo(['/login']);
+
+
+// Automatically log in users
+const redirectLoggedInToBackup = () => redirectLoggedInTo(['/backup']);
 
 const routes: Routes = [
   {
@@ -19,6 +27,18 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./backup/login/login.module').then( m => m.LoginPageModule),
+    ...canActivate(redirectLoggedInToBackup)
+  },
+  {
+    path: 'backup',
+    loadChildren: () => import('./backup/backup/backup.module').then( m => m.BackupPageModule),
+    ...canActivate(redirectUnauthorizedToLogin)
+  },
+  
+  
 ];
 
 @NgModule({

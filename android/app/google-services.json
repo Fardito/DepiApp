@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "965954966977",
+    "firebase_url": "https://depapp-1603481021025.firebaseio.com",
+    "project_id": "depapp-1603481021025",
+    "storage_bucket": "depapp-1603481021025.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965954966977:android:82450995ec7d504a0f8b40",
+        "android_client_info": {
+          "package_name": "com.fardosoftware.depapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965954966977-evbihj2b2rej3arsi4cr7o56upbau5bb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fardosoftware.depapp",
+            "certificate_hash": "338982d806b4bfeff3ce62265fd9538f129f9e95"
+          }
+        },
+        {
+          "client_id": "965954966977-220dsurl2r3kgp824ijl2lfjap5p3iov.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKgV5ur0C8HiNrbbmYjjqrdGAf44R5t5E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965954966977-220dsurl2r3kgp824ijl2lfjap5p3iov.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
