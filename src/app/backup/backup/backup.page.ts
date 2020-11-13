@@ -14,6 +14,10 @@ export class BackupPage implements OnInit {
   ngOnInit() {
   }
 
+  storeBackup(){
+    this.backupService.storeBackup();
+  }
+
   logout(){
     this.backupService.singOut().then(() => {
       this.router.navigateByUrl("/login", { replaceUrl: true });
