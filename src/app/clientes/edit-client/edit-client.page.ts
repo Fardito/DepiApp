@@ -48,6 +48,10 @@ export class EditClientPage implements OnInit, OnDestroy {
           updateOn: "blur",
           validators: [Validators.required],
         }),
+        sesiones: new FormControl(this.client.sesiones, {
+          updateOn: "blur",
+          validators: [Validators.required],
+        })
       });
     });
   }
@@ -67,7 +71,8 @@ export class EditClientPage implements OnInit, OnDestroy {
             this.client.id,
             this.form.value.firstName,
             this.form.value.lastName,
-            this.form.value.celPhone
+            this.form.value.celPhone,
+            this.form.value.sesiones
           )
           .subscribe(() => {
             loadingEl.dismiss();

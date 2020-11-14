@@ -3,6 +3,7 @@ export class Cliente{
         public id: string,
         public firstName: string,
         public lastName: string,
-        public celPhone: string
+        public celPhone: string,
+        public sesiones: number,
     ) {}
 }

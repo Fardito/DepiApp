@@ -28,8 +28,9 @@
         <ion-list>
           <ion-item *ngFor="let client of loadedClients">
             <ion-label>
-              <h2> {{ client.firstName }} {{ client.lastName }}</h2>
-              <p> {{ client.celPhone }}</p>
+              <h2> {{ client.lastName }} {{ client.firstName }}</h2>
+              <p> Cel: {{ client.celPhone }}</p>
+              <p> Sesiones: {{ client.sesiones }} </p>
             </ion-label>
             <ion-buttons slot="end">
               <ion-button (click)="onEditClient(client.id)">

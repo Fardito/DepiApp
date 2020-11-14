@@ -6,12 +6,10 @@
 
     <ion-title> Turnos: {{ fechaActual.date | date }} </ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="onEditFecha()">
-        <ion-icon name="pencil"></ion-icon>
+      <ion-button (click)="fechaActionSheet()">
+        <ion-icon name="ellipsis-vertical"></ion-icon>
       </ion-button>
-      <ion-button (click)="onDeleteFecha(fechaActual.id)">
-        <ion-icon name="trash"></ion-icon>
-      </ion-button>
+      
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -26,17 +24,23 @@
     </div>
   </div>
   <ion-grid *ngIf="loadedTurnos.length > 0">
-    <ion-list>
-      <ion-item *ngFor="let turno of loadedTurnos">
-        <p>{{ turno.hora }}</p>
-        <p>{{ turno.nombre }}</p>
-        <p>${{ turno.precio }}</p>
-        <ion-buttons slot="end">
-          <ion-button (click)="onDeleteTurno(turno.id)">
-            <ion-icon name="trash"></ion-icon>
-          </ion-button>
-        </ion-buttons>
-      </ion-item>
+    <ion-list *ngFor="let turno of loadedTurnos">
+      <div *ngIf="turno.realizado; else elseBlockTurno">
+        <ion-item color="success"  button (click)="turnoActionSheet(turno)" detail>
+          <p>{{ turno.hora }}</p>
+          <p>{{ turno.nombre }}</p>
+          <p>${{ turno.precio }}</p>
+        </ion-item>
+      </div>
+      <ng-template #elseBlockTurno>
+        <ion-item  button (click)="turnoActionSheet(turno)" detail>  
+            <p>{{ turno.hora }}</p>
+            <p>{{ turno.nombre }}</p>
+            <p>${{ turno.precio }}</p>
+        </ion-item>
+      </ng-template>
+
+
     </ion-list>
   </ion-grid>
 </ion-content>

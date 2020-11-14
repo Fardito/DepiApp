@@ -25,7 +25,8 @@ export class NewClientPage implements OnInit {
       id,
       this.form.value["first-name"],
       this.form.value["last-name"],
-      this.form.value["celPhone"]
+      this.form.value["celPhone"],
+      this.form.value["sesiones"]
     );
     this.form.reset();
     this.router.navigate(["/clientes"]);

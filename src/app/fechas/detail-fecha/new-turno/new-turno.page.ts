@@ -59,7 +59,7 @@ export class NewTurnoPage implements OnInit, OnDestroy {
       `/fechas/detail-fecha/${this.fechaActual.id}`
     );
   }
-
+  
   ngOnDestroy() {
     if (this.clientSub) {
       this.clientSub.unsubscribe();

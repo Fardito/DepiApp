@@ -29,8 +29,8 @@
         <ion-col>
           <ion-item>
             <ion-label>Cliente</ion-label>
-            <ion-select interface="action-sheet" ngModel name="cliente" required>
-              <ion-select-option *ngFor="let client of loadedClients">{{ client.firstName }} {{ client.lastName }}</ion-select-option>
+            <ion-select cancelText="Cancelar" interface="action-sheet" ngModel name="cliente" required>
+              <ion-select-option *ngFor="let client of loadedClients">{{ client.lastName }} {{ client.firstName }}</ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>

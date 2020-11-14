@@ -28,7 +28,7 @@ export class TurnoService {
   }
 
   addTurno(id: string,hora: string, nombre: string, precio: number, fechaId: string){
-    const newTurno = new Turno(id,hora, nombre, precio, fechaId);
+    const newTurno = new Turno(id,hora, nombre, precio, fechaId, false);
     this.storageService.addTurno(newTurno);
     this.turnos.pipe(take(1)).subscribe( turnos => {
       this._turnos.next(turnos.concat(newTurno));
