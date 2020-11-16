@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AlertController, IonReorderGroup, NavController, ToastController } from "@ionic/angular";
+import { AlertController, IonReorderGroup, NavController, Platform, ToastController } from "@ionic/angular";
 import { Subscription } from "rxjs";
 import { Fecha } from "../fechas.model";
 import { FechasService } from "../fechas.service";
@@ -8,6 +8,14 @@ import { Turno } from './turno.model';
 import { TurnoService } from './turno.service';
 import { ActionSheetController } from '@ionic/angular';
 import { ClientesService } from 'src/app/clientes/clientes.service';
+import { StorageService } from 'src/app/storage.service';
+
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { FilesystemDirectory, Plugins } from '@capacitor/core';
+const { Filesystem } = Plugins;
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: "app-detail-fecha",
@@ -19,6 +27,7 @@ export class DetailFechaPage implements OnInit, OnDestroy {
   fechaSub: Subscription;
   loadedTurnos: Turno[];
   turnoSub: Subscription;
+  pdfObj : any;
 
   @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
 
@@ -31,8 +40,13 @@ export class DetailFechaPage implements OnInit, OnDestroy {
     private turnoService: TurnoService,
     private actionSheetController: ActionSheetController,
     private clientService: ClientesService,
-    private toastController: ToastController
-  ) {}
+    private toastController: ToastController,
+    private storageService: StorageService,
+    private plt: Platform,
+    private fileOpener: FileOpener
+  ) {
+
+  }
 
   ngOnInit() {
     this.activeRoute.paramMap.subscribe((paramMap) => {
@@ -50,6 +64,96 @@ export class DetailFechaPage implements OnInit, OnDestroy {
     this.turnoSub = this.turnoService.turnos.subscribe( turnos => {
       this.loadedTurnos = turnos.filter( t => t.fechaId === this.fechaActual.id).sort((a,b) => a.hora.localeCompare(b.hora));
     })
+  }
+
+  createPdf(){
+    let j = "";
+    this.loadedTurnos.forEach(turno => {
+      j = j + turno.hora + " - " + turno.nombre + " " + "$" + turno.precio.toString() + "\n";
+    })
+    const docDefinition = {
+      content: [
+        {text: 'Turnos', style: 'header'},
+        
+        {
+          style: 'tableExample',
+          table: {
+            
+            body: [ 
+            [{
+              text: j
+            }]
+            ]
+          }
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 24,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        },
+        subheader: {
+          fontSize: 16,
+          bold: true,
+          margin: [0, 10, 0, 5]
+        },
+        tableExample: {
+          fontSize: 16,
+          margin: [0, 5, 0, 15]
+        },
+        tableHeader: {
+          bold: true,
+          fontSize: 13,
+          color: 'black'
+        }
+      }
+    }
+   
+    
+     this.pdfObj = pdfMake.createPdf(docDefinition);
+     this.downloadPdf();
+
+  }
+
+  downloadPdf(){
+    if(this.plt.is('cordova')){
+      
+      this.pdfObj.getBase64(async (data) => {
+        try {
+          let path = `turnos.pdf`;
+
+          const result = await Filesystem.writeFile({
+            path: path,
+            data: data,
+            directory: FilesystemDirectory.Data
+          }).then((writeFileResult) => {
+            console.log('File Written');
+            Filesystem.getUri({
+                directory: FilesystemDirectory.Data,
+                path: path
+            }).then((getUriResult) => {
+                console.log(getUriResult);
+                const path = getUriResult.uri;
+                this.fileOpener.open(path, 'application/pdf')
+                .then(() => console.log('File is opened'))
+                .catch(error => console.log('Error openening file', error));
+            }, (error) => {
+                console.log(error);
+            });
+          });
+          console.log('writeFile complete');;
+
+          //console.log("llegue 1");
+          //this.fileOpener.open(`${result.uri}`, 'application/pdf');
+          //console.log("llegue 2");
+        } catch (error) {
+          console.error('Unable to write file', error)
+        }
+      })
+    } else {
+      this.pdfObj.download();
+    }
   }
 
   async fechaActionSheet() {
@@ -70,12 +174,12 @@ export class DetailFechaPage implements OnInit, OnDestroy {
           this.onEditFecha();
         }
       }, {
-        text: 'Crear PDF con turnos',
+        text: 'Descargar PDF con turnos',
         icon: 'document-text',
         handler: () => {
-          console.log('creating pdf...');
+          this.createPdf();
         }
-      }, {
+      },{
         text: 'Cancelar',
         icon: 'close',
         role: 'cancel',
@@ -110,9 +214,10 @@ export class DetailFechaPage implements OnInit, OnDestroy {
           let nombreYApellidoDelTurno = turno.nombre.split(" ");
           this.clientService.increaseOneClientSesion(nombreYApellidoDelTurno[0],nombreYApellidoDelTurno[1]);
           turno.realizado = true;
+          this.storageService.updateTurno(turno);
           this.toastController.create({
             color: 'dark',
-            duration: 300,
+            duration: 450,
             message: 'Sesion incrementada',
             position: 'top',
           }).then( toastEl => {

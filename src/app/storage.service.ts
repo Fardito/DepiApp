@@ -155,6 +155,24 @@ export class StorageService {
     return this.storage.get(TURNOS_KEY);
   }
 
+  updateTurno(turno: Turno): Promise<any>{
+    return this.storage.get(TURNOS_KEY).then( (turnos: Turno[]) => {
+      if(!turnos || turnos.length === 0){
+        return null;
+      }
+
+      let newTurno: Turno[] = [];
+      for(let tempTurno of turnos){
+        if(tempTurno.id === turno.id){
+          newTurno.push(turno);
+        } else{
+          newTurno.push(tempTurno);
+        }
+      }
+
+      return this.storage.set(TURNOS_KEY, newTurno);
+    })
+  }
 
   deleteTurno(id: string): Promise<Turno>{
     return this.storage.get(TURNOS_KEY).then( (turnos: Turno[]) => {
