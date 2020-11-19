@@ -4,22 +4,23 @@ import { AngularFirestore } from "@angular/fire/firestore";
 import "@codetrix-studio/capacitor-google-auth";
 import { Plugins } from "@capacitor/core";
 import * as firebase from "firebase";
-import { GooglePlus } from "@ionic-native/google-plus";
 import { ClientesService } from "../clientes/clientes.service";
 import { Cliente } from "../clientes/clientes.model";
-import { map } from 'rxjs/operators';
-import { StorageService } from '../storage.service';
+import { StorageService } from "../storage.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class BackupService {
   currentUser = null;
-  
+
+  ArrayClient: Cliente[] = [];
+
   constructor(
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
-    private storageClient: StorageService
+    private clientService: ClientesService,
+    private storageService: StorageService
   ) {
     this.afAuth.onAuthStateChanged((user) => {
       this.currentUser = user;
@@ -42,8 +43,43 @@ export class BackupService {
   }
 
   storeBackup() {
-    
+    this.clientService.clientes.subscribe((clientes) => {
+      clientes.forEach((cliente) => {
+        this.afs
+          .collection("users")
+          .doc(this.currentUser.uid)
+          .collection("clientes")
+          .doc(cliente.id)
+          .set({
+            firstName: cliente.firstName,
+            lastName: cliente.lastName,
+            phone: cliente.celPhone,
+            id: cliente.id,
+            sesiones: cliente.sesiones,
+          });
+      });
+    });
   }
 
-  downloadBackup() {}
+  async downloadBackup() {
+    const doc = this.afs
+      .collection("users")
+      .doc(this.currentUser.uid)
+      .collection("clientes");
+
+    const anotherDoc = doc.get();
+    await anotherDoc.forEach( (x) => {
+      x.forEach( async (y) => {
+        this.ArrayClient.push(new Cliente(y.data().id,y.data().firstName,y.data().lastName,y.data().phone,y.data().sesiones));
+      });
+    });
+
+    console.log(this.ArrayClient);
+  
+    /*
+    for (let index = 0; index < this.ArrayClient.length; index++) {
+     await this.storageService.addClient(new Cliente(this.ArrayClient[index].id,this.ArrayClient[index].firstName,this.ArrayClient[index].lastName,this.ArrayClient[index].celPhone,this.ArrayClient[index].sesiones)); 
+    }
+    */
+  }
 }

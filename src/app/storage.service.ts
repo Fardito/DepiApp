@@ -15,23 +15,26 @@ const TURNOS_KEY = 'my-turnos';
 })
 export class StorageService {
 
-  constructor(private storage: Storage) { }
+  constructor(private storage: Storage ) { }
 
   // Client Storage
 
-  addClient(client: Cliente): Promise<any>{
-    return this.storage.get(CLIENTS_KEY).then( (clients: Cliente[]) => {
+  async addClient(client: Cliente): Promise<any>{
+
+    const clients = await this.storage.get(CLIENTS_KEY);
+
       if(clients){
         clients.push(client);
-        return this.storage.set(CLIENTS_KEY, clients);
+        this.storage.set(CLIENTS_KEY, clients);
       } else {
-        return this.storage.set(CLIENTS_KEY, [client]);
+        console.log('?');
+         this.storage.set(CLIENTS_KEY, [client]);
       }
-    })
+    
   }
 
-  getClients(): Promise<Cliente[]>{
-    return this.storage.get(CLIENTS_KEY);
+  async getClients(): Promise<Cliente[]>{
+    return await this.storage.get(CLIENTS_KEY);
   }
 
   updateClient(client: Cliente): Promise<any>{

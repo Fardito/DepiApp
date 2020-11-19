@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { BehaviorSubject } from "rxjs";
 import { take, map, tap, delay } from "rxjs/operators";
 import { StorageService } from "../storage.service";
@@ -10,20 +10,22 @@ import { Cliente } from "./clientes.model";
 })
 export class ClientesService {
   private _clientes = new BehaviorSubject<Cliente[]>([]);
+  
 
   get clientes() {
     return this._clientes.asObservable();
   }
 
-  constructor(private storageService: StorageService, private alertCtrl: AlertController) {
+  constructor(private storageService: StorageService, private alertCtrl: AlertController, private toastController: ToastController) {
     this.clientes.pipe(take(1)).subscribe((clientes) => {
-      storageService.getClients().then((storageClients) => {
+      this.storageService.getClients().then((storageClients) => {
         if (storageClients !== null) {
           this._clientes.next((clientes = storageClients));
         }
       });
     });
   }
+
 
   getClient(id: string) {
     return this.clientes.pipe(
@@ -46,7 +48,7 @@ export class ClientesService {
     });
   }
 
-  addClient(
+    addClient(
     id: string,
     firstName: string,
     lastName: string,
@@ -55,31 +57,34 @@ export class ClientesService {
   ) {
     const newClient = new Cliente(id, firstName, lastName, celPhone, sesiones);
     
-    this.clientes.pipe(take(1)).subscribe((clientes) => {
+    
+    this.clientes.pipe(take(1)).subscribe( (clientes) => {
+      
       const clienteExiste = clientes.find((cliente) => {
        return cliente.firstName === newClient.firstName && cliente.lastName === newClient.lastName;
       });
       
       if(clienteExiste !== undefined){
-        this.alertCtrl.create({
-          header: 'Error',
-          message: 'Ya existe un cliente con el mismo nombre, por favor ingrese un nombre distinto',
-          buttons: [{
-            text: 'Ok'
-          }]
-        }).then((alertEl) => {
-          alertEl.present();
-        })
-
         
-      } else {
+        this.toastController.create({
+          color: 'dark',
+          duration: 450,
+          message: `El cliente ${clienteExiste.firstName} ${clienteExiste.lastName} ya existe`,
+          position: 'top',
+        }).then( toastEl => {
+          toastEl.present()
+        })
+        
+      } else  {
+        
+        
         this.storageService.addClient(newClient);
         this._clientes.next(clientes.concat(newClient));
+        
       }
       
-      
-      
     });
+    
   }
 
   updateClient(

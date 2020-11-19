@@ -18,6 +18,10 @@ export class BackupPage implements OnInit {
     this.backupService.storeBackup();
   }
 
+  downloadBackup(){
+    this.backupService.downloadBackup();
+  }
+
   logout(){
     this.backupService.singOut().then(() => {
       this.router.navigateByUrl("/login", { replaceUrl: true });

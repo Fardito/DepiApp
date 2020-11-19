@@ -27,8 +27,9 @@ export class ClientesPage implements OnInit, OnDestroy {
     });
   }
 
-  ionViewWillEnter() {
-    this.loadedClients.sort((a, b) => a.lastName.localeCompare(b.lastName));
+  ionViewWillEnter(){
+    console.log('WILL');
+    
   }
 
   onAddClient() {
@@ -64,6 +65,7 @@ export class ClientesPage implements OnInit, OnDestroy {
       });
   }
 
+  
   ngOnDestroy() {
     if (this.clientSub) {
       this.clientSub.unsubscribe();

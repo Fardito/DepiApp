@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
+import { StorageService } from 'src/app/storage.service';
+import { Cliente } from '../clientes.model';
 import { ClientesService } from "../clientes.service";
 
 @Component({
@@ -11,7 +13,7 @@ import { ClientesService } from "../clientes.service";
 export class NewClientPage implements OnInit {
   @ViewChild("f") form: NgForm;
 
-  constructor(private router: Router, private clientService: ClientesService) {}
+  constructor(private router: Router, private clientService: ClientesService, private storageService: StorageService) {}
 
   ngOnInit() {}
 
@@ -21,13 +23,16 @@ export class NewClientPage implements OnInit {
     }
     const id = (Math.random() * 6 + 1).toString();
     
-    this.clientService.addClient(
+     this.clientService.addClient(
       id,
       this.form.value["first-name"],
       this.form.value["last-name"],
       this.form.value["celPhone"],
       this.form.value["sesiones"]
     );
+    
+
+    
     this.form.reset();
     this.router.navigate(["/clientes"]);
   }
