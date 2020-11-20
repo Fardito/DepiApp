@@ -43,6 +43,7 @@ export class BackupService {
   }
 
   storeBackup() {
+
     this.clientService.clientes.subscribe((clientes) => {
       clientes.forEach((cliente) => {
         this.afs
@@ -76,10 +77,10 @@ export class BackupService {
 
     console.log(this.ArrayClient);
   
-    /*
+    
     for (let index = 0; index < this.ArrayClient.length; index++) {
      await this.storageService.addClient(new Cliente(this.ArrayClient[index].id,this.ArrayClient[index].firstName,this.ArrayClient[index].lastName,this.ArrayClient[index].celPhone,this.ArrayClient[index].sesiones)); 
     }
-    */
+    
   }
 }
