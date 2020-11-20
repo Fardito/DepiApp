@@ -60,9 +60,11 @@ export class BackupService {
           });
       });
     });
+
   }
 
   async downloadBackup() {
+
     const doc = this.afs
       .collection("users")
       .doc(this.currentUser.uid)
@@ -74,13 +76,19 @@ export class BackupService {
         this.ArrayClient.push(new Cliente(y.data().id,y.data().firstName,y.data().lastName,y.data().phone,y.data().sesiones));
       });
     });
-
-    console.log(this.ArrayClient);
-  
+/*
+    this.ArrayClient.forEach(async (cliente) => {
+      await this.storageService.addClient(new Cliente(cliente.id, cliente.firstName, cliente.lastName, cliente.celPhone, cliente.sesiones));
+      this.clientService.addClient(cliente.id, cliente.firstName, cliente.lastName, cliente.celPhone, cliente.sesiones);
+    })
+*/
     
     for (let index = 0; index < this.ArrayClient.length; index++) {
-     await this.storageService.addClient(new Cliente(this.ArrayClient[index].id,this.ArrayClient[index].firstName,this.ArrayClient[index].lastName,this.ArrayClient[index].celPhone,this.ArrayClient[index].sesiones)); 
+      if(this.clientService.addClient(this.ArrayClient[index].id,this.ArrayClient[index].firstName,this.ArrayClient[index].lastName,this.ArrayClient[index].celPhone,this.ArrayClient[index].sesiones)){
+        await this.storageService.addClient(new Cliente(this.ArrayClient[index].id,this.ArrayClient[index].firstName,this.ArrayClient[index].lastName,this.ArrayClient[index].celPhone,this.ArrayClient[index].sesiones));
+      } 
     }
+    
     
   }
 }

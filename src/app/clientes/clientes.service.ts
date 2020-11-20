@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from "@ionic/angular";
 import { BehaviorSubject } from "rxjs";
 import { take, map, tap, delay } from "rxjs/operators";
 import { StorageService } from "../storage.service";
@@ -10,13 +10,16 @@ import { Cliente } from "./clientes.model";
 })
 export class ClientesService {
   private _clientes = new BehaviorSubject<Cliente[]>([]);
-  
 
   get clientes() {
     return this._clientes.asObservable();
   }
 
-  constructor(private storageService: StorageService, private alertCtrl: AlertController, private toastController: ToastController) {
+  constructor(
+    private storageService: StorageService,
+    private alertCtrl: AlertController,
+    private toastController: ToastController
+  ) {
     this.clientes.pipe(take(1)).subscribe((clientes) => {
       this.storageService.getClients().then((storageClients) => {
         if (storageClients !== null) {
@@ -25,7 +28,6 @@ export class ClientesService {
       });
     });
   }
-
 
   getClient(id: string) {
     return this.clientes.pipe(
@@ -37,18 +39,33 @@ export class ClientesService {
   }
 
   increaseOneClientSesion(lastName: string, firstName: string) {
-
     this.clientes.pipe(take(1)).subscribe((clientes) => {
       const clienteExiste = clientes.find((cliente) => {
-       return cliente.firstName === firstName && cliente.lastName === lastName
+        return cliente.firstName === firstName && cliente.lastName === lastName;
       });
-      if(clienteExiste !== undefined){
-        this.updateClient(clienteExiste.id, clienteExiste.firstName, clienteExiste.lastName, clienteExiste.celPhone, clienteExiste.sesiones + 1).subscribe();
-      } 
+      if (clienteExiste !== undefined) {
+        this.updateClient(
+          clienteExiste.id,
+          clienteExiste.firstName,
+          clienteExiste.lastName,
+          clienteExiste.celPhone,
+          clienteExiste.sesiones + 1
+        ).subscribe();
+      }
     });
   }
 
-    addClient(
+  existeCliente(newClient: Cliente) {
+    let loadedClientes: Cliente[] = [];
+    this.clientes.subscribe((clientes) => {
+      loadedClientes = clientes;
+    })
+    return loadedClientes.find(cliente => {
+      return cliente.firstName === newClient.firstName && cliente.lastName === newClient.lastName;
+    })
+  }
+
+  addClient(
     id: string,
     firstName: string,
     lastName: string,
@@ -56,35 +73,32 @@ export class ClientesService {
     sesiones: number
   ) {
     const newClient = new Cliente(id, firstName, lastName, celPhone, sesiones);
-    
-    
-    this.clientes.pipe(take(1)).subscribe( (clientes) => {
-      
+    let resultOfAdding = false;
+    this.clientes.pipe(take(1)).subscribe(async (clientes) => {
+      /*
       const clienteExiste = clientes.find((cliente) => {
        return cliente.firstName === newClient.firstName && cliente.lastName === newClient.lastName;
       });
-      
-      if(clienteExiste !== undefined){
-        
-        this.toastController.create({
-          color: 'dark',
-          duration: 450,
-          message: `El cliente ${clienteExiste.firstName} ${clienteExiste.lastName} ya existe`,
-          position: 'top',
-        }).then( toastEl => {
-          toastEl.present()
-        })
-        
-      } else  {
-        
-        
-        this.storageService.addClient(newClient);
+      */
+
+      const clienteExiste = this.existeCliente(newClient);
+      if (clienteExiste !== undefined) {
+        this.toastController
+          .create({
+            color: "dark",
+            duration: 450,
+            message: `El cliente ${clienteExiste.firstName} ${clienteExiste.lastName} ya existe`,
+            position: "top",
+          })
+          .then((toastEl) => {
+            toastEl.present();
+          });
+      } else {
         this._clientes.next(clientes.concat(newClient));
-        
+        resultOfAdding = true;
       }
-      
     });
-    
+    return resultOfAdding;
   }
 
   updateClient(

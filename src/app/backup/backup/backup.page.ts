@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
+import { delay } from 'rxjs/operators';
 import { BackupService } from '../backup.service';
 
 @Component({
@@ -9,17 +11,40 @@ import { BackupService } from '../backup.service';
 })
 export class BackupPage implements OnInit {
 
-  constructor(private backupService: BackupService, private router: Router) { }
+  constructor(private backupService: BackupService, private router: Router, private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
   }
 
   storeBackup(){
-    this.backupService.storeBackup();
+    this.loadingCtrl
+      .create({
+        message: "Subiendo datos...",
+      })
+      .then((loadingEl) => {
+        loadingEl.present();
+          this.backupService.storeBackup();
+          loadingEl.dismiss();
+        
+        
+      });
+    
   }
 
   downloadBackup(){
-    this.backupService.downloadBackup();
+    this.loadingCtrl
+      .create({
+        message: "Descargando...",
+      })
+      .then((loadingEl) => {
+        loadingEl.present();
+        this.backupService.downloadBackup() 
+          .then(() => {
+            loadingEl.dismiss();
+            this.router.navigate(["/clientes"]);
+          });
+      });
+    
   }
 
   logout(){

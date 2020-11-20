@@ -27,11 +27,6 @@ export class ClientesPage implements OnInit, OnDestroy {
     });
   }
 
-  ionViewWillEnter(){
-    console.log('WILL');
-    
-  }
-
   onAddClient() {
     this.router.navigate(["/clientes/new-client"]);
   }

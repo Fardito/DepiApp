@@ -21,16 +21,17 @@ export class StorageService {
 
   async addClient(client: Cliente): Promise<any>{
 
-    const clients = await this.storage.get(CLIENTS_KEY);
-
+    const clients: Cliente[] = await this.storage.get(CLIENTS_KEY);
+    console.log(clients, 'clientes');
+    
       if(clients){
         clients.push(client);
-        this.storage.set(CLIENTS_KEY, clients);
+        await this.storage.set(CLIENTS_KEY, clients);
+        console.log(clients, 'clientes');
       } else {
         console.log('?');
-         this.storage.set(CLIENTS_KEY, [client]);
+         return await this.storage.set(CLIENTS_KEY, [client]);
       }
-    
   }
 
   async getClients(): Promise<Cliente[]>{
